@@ -1,3 +1,4 @@
+
 import numpy
 import pandas
 from gewittergefahr.gg_io import storm_tracking_io as tracking_io
@@ -44,7 +45,7 @@ def _get_dates_needed(working_date_index, num_dates, climatology_type):
     return numpy.array(date_needed_indices, dtype=int)
 
 
-def _get_storm_id_and_hour_strings(storm_ids, unix_times_sec, age_sec):
+def _get_storm_id_and_hour_strings(storm_ids, unix_times_sec):
     """Turns each pair of storm ID and time into string with storm ID and hour.
 
     N = number of storm objects
@@ -53,17 +54,12 @@ def _get_storm_id_and_hour_strings(storm_ids, unix_times_sec, age_sec):
     :param unix_times_sec: length-N numpy array of valid times.
     :return: storm_id_and_hour_strings: length-N list of strings.
     """
-    index = []
-    for x in range(0, len(age_sec)):
-        if age_sec[x] >900:
-            index.append(x)
-    times= [unix_times_sec[i] for i in index]
-    storms = [storm_ids[i] for i in index]
-    hour_strings = [time_conversion.unix_sec_to_string(t, HOUR_FORMAT)
-                    for t in times]
 
-    return ['{0:s}_{1:s}'.format(storms[i], hour_strings[i])
-            for i in range(len(storms))]
+    hour_strings = [time_conversion.unix_sec_to_string(t, HOUR_FORMAT)
+                    for t in unix_times_sec]
+
+    return ['{0:s}_{1:s}'.format(storm_ids[i], hour_strings[i])
+            for i in range(len(storm_ids))]
 
 
 def _parse_storm_id_and_hour_strings(storm_id_and_hour_strings):
@@ -126,20 +122,16 @@ if __name__ == '__main__':
 
         storm_object_tables_to_concat = [storm_object_table_by_spc_date[j] for j in date_in_memory_indices]
         multiday_storm_object_table = pandas.concat(storm_object_tables_to_concat, axis=0, ignore_index=True)
+        print(multiday_storm_object_table)
+        multiday_storm_object_table = multiday_storm_object_table[multiday_storm_object_table['age_sec'] > 900]
+        print(len(multiday_storm_object_table))
+
+
         
-        """multiday_table =[]
-        for x in multiday_storm_object_table.index:
-            if multiday_storm_object_table.loc[x]['age_sec'] > 900:
-                multiday_table.append(multiday_storm_object_table.loc[x])     
-        multi_storm_table = numpy.array(multiday_table)
-        
-        #
-        #print(multiday_table['storm_id'])
-        """
+  
         storm_id_and_hour_strings = _get_storm_id_and_hour_strings(
                         storm_ids=multiday_storm_object_table['storm_id'].values,
-                        unix_times_sec=multiday_storm_object_table['unix_time_sec'].values, 
-                        age_sec= multiday_storm_object_table['age_sec'].values)
+                        unix_times_sec=multiday_storm_object_table['unix_time_sec'].values)
     
         
         
