@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 SEPARATOR_STRING = '\n\n' + '*' * 50 + '\n\n'
 
 FIRST_SPC_DATE_STRING = '20110401'
-LAST_SPC_DATE_STRING = '20110403'
+LAST_SPC_DATE_STRING = '20110430'
 TOP_PROCESSED_DIR_NAME = '/Users/reu/Downloads/'
 TRACKING_SCALE_METRES2 = 314159265
 
@@ -46,22 +46,6 @@ def _get_dates_needed(working_date_index, num_dates, climatology_type):
     
     return numpy.array(date_needed_indices, dtype=int)
 
-def _get_storm_id_and_hour_strings(storm_ids, unix_times_sec):
-    """Turns each pair of storm ID and time into string with storm ID and hour.
-
-    N = number of storm objects
-
-    :param storm_ids: length-N list of storm IDs (strings).
-    :param unix_times_sec: length-N numpy array of valid times.
-    :return: storm_id_and_hour_strings: length-N list of strings.
-    """
-    hour_strings = [time_conversion.unix_sec_to_string(t, HOUR_FORMAT)
-                    for t in unix_times_sec]
-
-    return ['{0:s}_{1:s}'.format( hour_strings[i])
-            for i in range(len(storm_ids))]
-
-
 
 if __name__ == '__main__':
     spc_date_strings = time_conversion.get_spc_dates_in_range(
@@ -97,14 +81,16 @@ if __name__ == '__main__':
 
         storm_object_tables_to_concat = [storm_object_table_by_spc_date[j] for j in date_in_memory_indices]
         multiday_storm_object_table = pandas.concat(storm_object_tables_to_concat, axis=0, ignore_index=True)
+        multiday_storm_object_table = multiday_storm_object_table[multiday_storm_object_table['age_sec'] > 900]
+        multiday_storm_object_table= multiday_storm_object_table.reset_index()
+        del multiday_storm_object_table['index']
+        multi_storm_ids, place_holder = numpy.unique(multiday_storm_object_table['storm_id'].values, return_index = True)
         
-        print('total storm objects', len(multiday_storm_object_table))
-
-        multi_storm_ids, place_holder = numpy.unique(multiday_storm_object_table['storm_id'].values, 
-                                                     return_index = True)
         print('sift 1',len(place_holder))
+        unique_storm_times = []
+        for x in place_holder:
+            unique_storm_times.append(multiday_storm_object_table.loc[x]['unix_time_sec'])
         
-        unique_storm_times = [multiday_storm_object_table.loc[x]['unix_time_sec'] for x in place_holder]
         unique_times = []
         for x in unique_storm_times:
             if (max(unique_storm_times) - 86800)<= x <= max(unique_storm_times):
