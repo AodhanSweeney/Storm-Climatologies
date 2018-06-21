@@ -85,7 +85,7 @@ def storm_id(storm_id):
 
 from math import radians, cos, sin, asin, sqrt
 
-def haversine(lon1, lat1, lon2, lat2):
+def distance_from_latlng(lon1, lat1, lon2, lat2):
     """
     Calculate the great circle distance between two points 
     on the earth (specified in decimal degrees)
@@ -177,7 +177,7 @@ if __name__ == '__main__':
         first_occurance_position = get_the_centroid(multiday_storm_object_table['polygon_object_latlng'], first_address)
         last_occurance_position = get_the_centroid(multiday_storm_object_table['polygon_object_latlng'], last_address)
         for x in range(0,len(first_occurance_position)):
-            distance = haversine(first_occurance_position[x,0], first_occurance_position[x,1], 
+            distance = distance_from_latlng(first_occurance_position[x,0], first_occurance_position[x,1], 
                   last_occurance_position[x,0], last_occurance_position[x,1])
             distance_in_km.append(distance)
     
