@@ -51,6 +51,7 @@ def _get_dates_needed(working_date_index, num_dates, climatology_type):
     
     return numpy.array(date_needed_indices, dtype=int)
 
+  
 def get_storm_object_table(num_spc_dates, climatology_type, working_date_index):
     date_in_memory_indices = _get_dates_needed(working_date_index, num_spc_dates, climatology_type)
     for i in range(num_spc_dates):
@@ -76,6 +77,7 @@ def get_storm_object_table(num_spc_dates, climatology_type, working_date_index):
     multiday_storm_object_table = multiday_storm_object_table[multiday_storm_object_table['age_sec']>= 900]
     return multiday_storm_object_table
 
+  
 def get_the_centroid(multiday_storm_object_table, address_of_unique_storms):
     """turns the shapely point list of centroids taken from the multiday storm object table
     and converts them into a numpy array
@@ -91,6 +93,7 @@ def get_the_centroid(multiday_storm_object_table, address_of_unique_storms):
         centroids.append([centroid_pt.x, centroid_pt.y])
     return numpy.array(centroids)
 
+  
 def get_latlng_grid_points(min_latitude_deg=None, min_longitude_deg=None,
                            lat_spacing_deg=None, lng_spacing_deg=None,
                            num_rows=None, num_columns=None):
@@ -133,6 +136,7 @@ def get_latlng_grid_points(min_latitude_deg=None, min_longitude_deg=None,
 
     return grid_point_latitudes_deg, grid_point_longitudes_deg
 
+  
 def latlng_vectors_to_matrices(unique_latitudes_deg, unique_longitudes_deg):
     """Converts vectors of lat and long coordinates to matrices.
     This method works only for a regular lat-long grid.  Works for coordinates
@@ -161,3 +165,20 @@ def latlng_vectors_to_matrices(unique_latitudes_deg, unique_longitudes_deg):
     (longitude_matrix_deg, latitude_matrix_deg) = numpy.meshgrid(
         unique_longitudes_deg, unique_latitudes_deg)
     return latitude_matrix_deg, longitude_matrix_deg
+  
+  
+  def distance_from_latlng(lon1, lat1, lon2, lat2):
+    """
+    Calculate the great circle distance between two points 
+    on the earth (specified in decimal degrees)
+    """
+    # convert decimal degrees to radians 
+    lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
+    # haversine formula 
+    dlon = lon2 - lon1 
+    dlat = lat2 - lat1 
+    a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2
+    c = 2 * asin(sqrt(a)) 
+    # Radius of earth in kilometers is 6371
+    km = 6371* c
+    return km
