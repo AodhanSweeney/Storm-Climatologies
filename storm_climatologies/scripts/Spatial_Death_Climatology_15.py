@@ -56,23 +56,6 @@ def _get_dates_needed(working_date_index, num_dates, climatology_type):
     return numpy.array(date_needed_indices, dtype=int)
 
 
-
-
-def _get_storm_id_and_hour_strings(storm_ids, unix_times_sec):
-    """Turns each pair of storm ID and time into string with storm ID and hour.
-
-    N = number of storm objects
-
-    :param storm_ids: length-N list of storm IDs (strings).
-    :param unix_times_sec: length-N numpy array of valid times.
-    :return: storm_id_and_hour_strings: length-N list of strings.
-    """
-    hour_strings = [time_conversion.unix_sec_to_string(t, HOUR_FORMAT)
-                    for t in unix_times_sec]
-
-    return ['{0:s}_{1:s}'.format( hour_strings[i])
-            for i in range(len(storm_ids))]
-
 def get_the_centroid(multiday_storm_object_table, address_of_unique_storms):
     """turns the shapely point list of centroids taken from the multiday storm object table
     and converts them into a numpy array
@@ -249,15 +232,15 @@ if __name__ == '__main__':
 
 
 
-m = Basemap(llcrnrlon=MIN_LONG_DEG, llcrnrlat=MIN_LAT_DEG, 
-            urcrnrlon=(MIN_LONG_DEG +NUM_COLUMNS -1), urcrnrlat=(MIN_LAT_DEG + NUM_ROWS-1))
-x, y = m(lons,lats)
-m.drawstates()
-m.drawcountries()
-m.drawcoastlines()
-m.contourf(x,y, grid_cell_count_matrix)
-m.colorbar()
-plt.title('Storm Death Frequency April 2011')
-plt.xlabel('Longitude')
-plt.ylabel('Latitude')
-plt.show()
+    m = Basemap(llcrnrlon=MIN_LONG_DEG, llcrnrlat=MIN_LAT_DEG, 
+                urcrnrlon=(MIN_LONG_DEG +NUM_COLUMNS -1), urcrnrlat=(MIN_LAT_DEG + NUM_ROWS-1))
+    x, y = m(lons,lats)
+    m.drawstates()
+    m.drawcountries()
+    m.drawcoastlines()
+    m.contourf(x,y, grid_cell_count_matrix)
+    m.colorbar()
+    plt.title('Storm Death Frequency April 2011')
+    plt.xlabel('Longitude')
+    plt.ylabel('Latitude')
+    plt.show()
