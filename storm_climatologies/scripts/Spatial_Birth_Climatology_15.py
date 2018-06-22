@@ -227,15 +227,15 @@ if __name__ == '__main__':
     grid_cell_count_matrix = numpy.ma.masked_where(grid_cell_count_matrix ==0, grid_cell_count_matrix)
 
 
-m = Basemap(llcrnrlon=MIN_LONG_DEG, llcrnrlat=MIN_LAT_DEG, 
-            urcrnrlon=(MIN_LONG_DEG +(NUM_COLUMNS*LONGITUDE_SPACING_DEG -1)), urcrnrlat=(MIN_LAT_DEG + (NUM_ROWS*LATITUDE_SPACING_DEG -1)))
-x, y = m(lons,lats)
-m.drawstates()
-m.drawcountries()
-m.drawcoastlines()
-m.contourf(x,y, grid_cell_count_matrix)
-m.colorbar()
-plt.title('Storm Birth Frequency April 2011')
-plt.xlabel('Longitude')
-plt.ylabel('Latitude')
-plt.show()
+    m = Basemap(llcrnrlon=MIN_LONG_DEG, llcrnrlat=MIN_LAT_DEG, 
+                urcrnrlon=(MIN_LONG_DEG +(NUM_COLUMNS*LONGITUDE_SPACING_DEG -1)), urcrnrlat=(MIN_LAT_DEG + (NUM_ROWS*LATITUDE_SPACING_DEG -1)))
+    x, y = m(lons,lats)
+    m.drawstates()
+    m.drawcountries()
+    m.drawcoastlines()
+    m.contourf(x,y, grid_cell_count_matrix)
+    m.colorbar()
+    plt.title('Storm Birth Frequency April 2011')
+    plt.xlabel('Longitude')
+    plt.ylabel('Latitude')
+    plt.show()
