@@ -197,22 +197,15 @@ if __name__ == '__main__':
                 grid_cell_count_matrix[i,j] = grid_cell_count_matrix[i,j] + count
     grid_cell_count_matrix = numpy.ma.masked_where(grid_cell_count_matrix == 0, grid_cell_count_matrix)
     
-"""plt.imshow(grid_cell_count_matrix, extent=[235,300,20,55]);
-plt.colorbar()
-plt.title('Relative Storm Frequency CONUS (1 deg res)')
-plt.xlabel('Longitude')
-plt.ylabel('Latitude')
-plt.show()"""
-#Plot data on Basemap with Contour
-m = Basemap(llcrnrlon=MIN_LONG_DEG, llcrnrlat=MIN_LAT_DEG, 
-            urcrnrlon=(MIN_LONG_DEG + NUM_COLUMNS-1), urcrnrlat=(MIN_LAT_DEG + NUM_ROWS-1))
-x, y = m(lons,lats)
-m.drawstates()
-m.drawcountries()
-m.drawcoastlines()
-m.contourf(x,y, grid_cell_count_matrix)
-m.colorbar()
-plt.title('Relative Storm Frequency April 2011')
-plt.xlabel('Longitude')
-plt.ylabel('Latitude')
-plt.show()    
+  m = Basemap(llcrnrlon=MIN_LONG_DEG, llcrnrlat=MIN_LAT_DEG, 
+              urcrnrlon=(MIN_LONG_DEG + NUM_COLUMNS-1), urcrnrlat=(MIN_LAT_DEG + NUM_ROWS-1))
+  x, y = m(lons,lats)
+  m.drawstates()
+  m.drawcountries()
+  m.drawcoastlines()
+  m.contourf(x,y, grid_cell_count_matrix)
+  m.colorbar()
+  plt.title('Relative Storm Frequency April 2011')
+  plt.xlabel('Longitude')
+  plt.ylabel('Latitude')
+  plt.show()    
