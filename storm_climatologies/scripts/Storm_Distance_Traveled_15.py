@@ -52,39 +52,6 @@ def _get_dates_needed(working_date_index, num_dates):
 
 
 
-
-def _get_storm_id_and_hour_strings(storm_ids, unix_times_sec):
-    """Turns each pair of storm ID and time into string with storm ID and hour.
-
-    N = number of storm objects
-
-    :param storm_ids: length-N list of storm IDs (strings).
-    :param unix_times_sec: length-N numpy array of valid times.
-    :return: storm_id_and_hour_strings: length-N list of strings.
-    """
-    hour_strings = [time_conversion.unix_sec_to_string(t, HOUR_FORMAT)
-                    for t in unix_times_sec]
-
-    return ['{0:s}_{1:s}'.format( hour_strings[i])
-            for i in range(len(storm_ids))]
-
-def storm_id(storm_id):
-    """Parses hour from each string created by `_get_storm_id_and_hour_strings`.
-
-    N = number of storm objects
-
-    :param storm_id_and_hour_strings: length-N list of strings created by
-        `_get_storm_id_and_hour_strings`.
-    :return: hour_integers: length-N numpy array of hours.
-    """
-    storm_strings = []
-    for s in storm_id:
-        storm_strings.append(s)
-    
-    return numpy.array(storm_strings)
-
-from math import radians, cos, sin, asin, sqrt
-
 def haversine(lon1, lat1, lon2, lat2):
     """
     Calculate the great circle distance between two points 
@@ -184,11 +151,11 @@ if __name__ == '__main__':
     distances = numpy.array(distance_in_km)
     
 
-print('mean distance traveled (km)', numpy.mean(distances))
-print('standard deviation (km)', numpy.std(distances))
-print('median distance traveled (km)', numpy.median(distances))
-plt.hist(distances, bins = 'auto')   
-plt.title('Storm Distance Traveled Data April 2011')
-plt.xlabel('Distance Traveled in km')
-plt.ylabel('Frequency')
-plt.show()
+    print('mean distance traveled (km)', numpy.mean(distances))
+    print('standard deviation (km)', numpy.std(distances))
+    print('median distance traveled (km)', numpy.median(distances))
+    plt.hist(distances, bins = 'auto')   
+    plt.title('Storm Distance Traveled Data April 2011')
+    plt.xlabel('Distance Traveled in km')
+    plt.ylabel('Frequency')
+    plt.show()
