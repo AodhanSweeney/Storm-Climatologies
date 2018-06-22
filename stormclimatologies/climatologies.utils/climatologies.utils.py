@@ -182,3 +182,28 @@ def latlng_vectors_to_matrices(unique_latitudes_deg, unique_longitudes_deg):
     # Radius of earth in kilometers is 6371
     km = 6371* c
     return km
+
+  
+  def get_storm_object_table(num_spc_dates, climatology_type, working_date_index):
+    date_in_memory_indices = _get_dates_needed(working_date_index, num_spc_dates, climatology_type)
+    for i in range(num_spc_dates):
+        if i in date_in_memory_indices:
+            if storm_object_table_by_spc_date[i] is None:
+                these_tracking_file_names = (tracking_io.find_processed_files_one_spc_date(
+                                                spc_date_string=spc_date_strings[i],
+                                                data_source='segmotion',
+                                                top_processed_dir_name=TOP_PROCESSED_DIR_NAME,
+                                                tracking_scale_metres2=TRACKING_SCALE_METRES2))
+                storm_object_table_by_spc_date[i] = (tracking_io.read_many_processed_files(
+                                                    these_tracking_file_names))
+
+        else:
+            print 'Clearing data for SPC date "{0:s}"...'.format(spc_date_strings[i])
+            storm_object_table_by_spc_date[i] = None
+
+    for j in date_in_memory_indices[1:]:
+        storm_object_table_by_spc_date[j], _ = (storm_object_table_by_spc_date[j].align(
+                                                storm_object_table_by_spc_date[date_in_memory_indices[0]], axis=1))
+    storm_object_tables_to_concat = [storm_object_table_by_spc_date[j] for j in date_in_memory_indices]
+    multiday_storm_object_table = pandas.concat(storm_object_tables_to_concat, axis=0, ignore_index=True)
+    return multiday_storm_object_table
