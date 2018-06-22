@@ -122,7 +122,7 @@ if __name__ == '__main__':
                      num_storm_objects_by_hour[unique_hours[j]])
             
         print SEPARATOR_STRING
-plt.bar(range(0,24),num_storm_objects_by_hour)
-plt.title('Storms Deaths by Hour Over CONUS April 2011')
-plt.xlabel("Hour of Day UTC time")
-plt.ylabel("Number of deaths counted")
+    plt.bar(range(0,24),num_storm_objects_by_hour)
+    plt.title('Storms Deaths by Hour Over CONUS April 2011')
+    plt.xlabel("Hour of Day UTC time")
+    plt.ylabel("Number of deaths counted")
