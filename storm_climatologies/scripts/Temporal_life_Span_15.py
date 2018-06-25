@@ -43,7 +43,7 @@ if __name__ == '__main__':
         last_table, lastplace_holder= numpy.unique(deaths_table, return_index = True)
         addresses_of_unique_storms = []
         for x in lastplace_holder:
-            if ((max(multiday_storm_object_table['unix_time_sec']) - 86800)<= 
+            if ((max(multiday_storm_object_table['unix_time_sec']) - 86400)<= 
                 multiday_storm_object_table.loc[x]['unix_time_sec']
                 <= max(multiday_storm_object_table['unix_time_sec'])):
                 addresses_of_unique_storms.append(x)
