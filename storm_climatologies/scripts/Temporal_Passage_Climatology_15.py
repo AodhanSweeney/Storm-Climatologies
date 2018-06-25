@@ -3,6 +3,7 @@ import pandas
 from gewittergefahr.gg_io import storm_tracking_io as tracking_io
 from gewittergefahr.gg_utils import time_conversion
 import matplotlib.pyplot as plt
+import utils
 
 SEPARATOR_STRING = '\n\n' + '*' * 50 + '\n\n'
 
@@ -17,31 +18,6 @@ NUM_HOURS_PER_DAY = 24
 BIRTH_CLIMATOLOGY_TYPE = 'birth'
 DEATH_CLIMATOLOGY_TYPE = 'death'
 PASSAGE_CLIMATOLOGY_TYPE = 'passage'
-
-
-def _get_dates_needed(working_date_index, num_dates, climatology_type):
-    """Gets dates needed for the given working date.
-
-    :param working_date_index: Array index for the day currently being worked
-        on.
-    :param num_dates: Number of dates total.
-    :return: date_needed_indices: 1-D numpy array with indices of dates needed.
-    """
-
-    if climatology_type == PASSAGE_CLIMATOLOGY_TYPE:
-        return numpy.array([working_date_index], dtype=int)
-
-    date_needed_indices = []
-    if climatology_type == BIRTH_CLIMATOLOGY_TYPE and working_date_index != 0:
-        date_needed_indices.append(working_date_index - 1)
-
-    date_needed_indices.append(working_date_index)
-
-    if (climatology_type == DEATH_CLIMATOLOGY_TYPE and
-            working_date_index != num_dates - 1):
-        date_needed_indices.append(working_date_index + 1)
-
-    return numpy.array(date_needed_indices, dtype=int)
 
 
 def _get_storm_id_and_hour_strings(storm_ids, unix_times_sec):
@@ -85,31 +61,7 @@ if __name__ == '__main__':
     num_storm_objects_by_hour = numpy.full(NUM_HOURS_PER_DAY, 0, dtype=int)
 
     for working_date_index in range(num_spc_dates):
-        date_in_memory_indices = _get_dates_needed(
-            working_date_index=working_date_index, num_dates=num_spc_dates,
-            climatology_type=PASSAGE_CLIMATOLOGY_TYPE)
-
-        for i in range(num_spc_dates):
-            if i in date_in_memory_indices:
-                if storm_object_table_by_spc_date[i] is None:
-
-                    # Find tracking files for [i]th date.
-                    these_tracking_file_names = (
-                        tracking_io.find_processed_files_one_spc_date(
-                            spc_date_string=spc_date_strings[i],
-                            data_source='segmotion',
-                            top_processed_dir_name=TOP_PROCESSED_DIR_NAME,
-                            tracking_scale_metres2=TRACKING_SCALE_METRES2))
-
-                    # Read tracking files for [i]th date.
-                    storm_object_table_by_spc_date[i] = (
-                        tracking_io.read_many_processed_files(
-                            these_tracking_file_names))
-
-                else:
-                    print 'Clearing data for SPC date "{0:s}"...'.format(
-                        spc_date_strings[i])
-                    storm_object_table_by_spc_date[i] = None
+        mutliday_storm_object_table = get_storm_object_table(num_spc_dates, Passage_Climatology, working_date_index)
 
         print SEPARATOR_STRING
 
