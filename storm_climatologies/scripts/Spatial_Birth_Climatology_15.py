@@ -6,7 +6,7 @@ from gewittergefahr.gg_utils import time_conversion
 import matplotlib.pyplot as plt
 from gewittergefahr.gg_utils import longitude_conversion as lng_conversion
 from gewittergefahr.gg_utils import error_checking
-from storm_climatologies import utils
+import utils
 
 DEGREES_LAT_TO_METRES = 60 * 1852
 DEGREES_TO_RADIANS = numpy.pi / 180
