@@ -2,7 +2,7 @@
 
 from setuptools import setup
 
-PACKAGE_NAMES = ['storm_climatologies.utils']
+PACKAGE_NAMES = ['storm_climatologies', 'storm_climatologies.utils']
 KEYWORDS = ['weather', 'meteorology', 'thunderstorm', '40-Dbz', 'tornado',
             '900 seconds']
 SHORT_DESCRIPTION = (
