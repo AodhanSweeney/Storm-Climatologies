@@ -62,7 +62,7 @@ if __name__ == '__main__':
         unique_times = [multiday_storm_object_table.loc[x]['unix_time_sec'] for x in place_holder]
         address_of_interest = []
         for x in place_holder:
-            if ((max(multiday_storm_object_table['unix_time_sec']) - 86800)<= 
+            if ((max(multiday_storm_object_table['unix_time_sec']) - 86400)<= 
                 multiday_storm_object_table.loc[x]['unix_time_sec']
                 <= max(multiday_storm_object_table['unix_time_sec'])):
                 address_of_interest.append(x)
