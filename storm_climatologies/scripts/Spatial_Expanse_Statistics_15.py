@@ -8,6 +8,7 @@ import shapely
 import shapely.ops as ops
 from shapely.geometry.polygon import Polygon
 from functools import partial
+import utils
 
 SEPARATOR_STRING = '\n\n' + '*' * 50 + '\n\n'
 
@@ -23,25 +24,6 @@ BIRTH_CLIMATOLOGY_TYPE = 'birth'
 DEATH_CLIMATOLOGY_TYPE = 'death'
 PASSAGE_CLIMATOLOGY_TYPE = 'passage'
 
-
-def _get_dates_needed(working_date_index, num_dates):
-    """Gets dates needed for the given working date.
-
-    :param working_date_index: Array index for the day currently being worked
-        on.
-    :param num_dates: Number of dates total.
-    :return: date_needed_indices: 1-D numpy array with indices of dates needed.
-    """
-    date_needed_indices = []
-    if working_date_index == 0:
-        date_needed_indices.append(working_date_index)
-    if working_date_index != 0:
-        date_needed_indices.append(working_date_index - 1)
-        date_needed_indices.append(working_date_index)
-
-        
-    return numpy.array(date_needed_indices, dtype=int)
-
 if __name__ == '__main__':
     spc_date_strings = time_conversion.get_spc_dates_in_range(
         first_spc_date_string=FIRST_SPC_DATE_STRING,
@@ -52,33 +34,9 @@ if __name__ == '__main__':
     storm_object_areas = []
 
     for working_date_index in range(num_spc_dates):
-        date_in_memory_indices = _get_dates_needed(working_date_index=working_date_index, num_dates=num_spc_dates)
-        for i in range(num_spc_dates):
-            if i in date_in_memory_indices:
-                if storm_object_table_by_spc_date[i] is None:
-                    these_tracking_file_names = (tracking_io.find_processed_files_one_spc_date(
-                                                    spc_date_string=spc_date_strings[i],
-                                                    data_source='segmotion',
-                                                    top_processed_dir_name=TOP_PROCESSED_DIR_NAME,
-                                                    tracking_scale_metres2=TRACKING_SCALE_METRES2))
-                    storm_object_table_by_spc_date[i] = (tracking_io.read_many_processed_files(
-                                                        these_tracking_file_names))
-            else:
-                print 'Clearing data for SPC date "{0:s}"...'.format(spc_date_strings[i])
-                storm_object_table_by_spc_date[i] = None
-        
-        print SEPARATOR_STRING
-
-        for j in date_in_memory_indices[1:]:
-            storm_object_table_by_spc_date[j], _ = (storm_object_table_by_spc_date[j].align(
-                                                    storm_object_table_by_spc_date[date_in_memory_indices[0]], axis=1))
-
-        storm_object_tables_to_concat = [storm_object_table_by_spc_date[j] for j in date_in_memory_indices]
-        multiday_storm_object_table = pandas.concat(storm_object_tables_to_concat, axis=0, ignore_index=True)  
-        multiday_storm_object_table = multiday_storm_object_table[multiday_storm_object_table['age_sec'] > 900]
+        mutliday_storm_object_table = get_storm_object_table(num_spc_dates, Passage_Climatology, working_date_index)
 
 
-        #storm_ids = storm_id(multiday_storm_object_table['storm_id'])
         print('total storm objects', len(multiday_storm_object_table))
         new_storms = []
         for x in multiday_storm_object_table.index:
