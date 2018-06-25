@@ -46,7 +46,7 @@ if __name__ == '__main__':
 
         deaths_in_last_day = []
         for x in times_of_death:
-            if (max(times_of_death) - 86800)<= x <= max(times_of_death):
+            if (max(times_of_death) - 86400)<= x <= max(times_of_death):
                 deaths_in_last_day.append(x)
         
         print('sift 2',len(deaths_in_last_day))
