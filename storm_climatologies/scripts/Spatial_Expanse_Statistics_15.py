@@ -40,7 +40,7 @@ if __name__ == '__main__':
         print('total storm objects', len(multiday_storm_object_table))
         new_storms = []
         for x in multiday_storm_object_table.index:
-            if ((max(multiday_storm_object_table['unix_time_sec']) - 86800)
+            if ((max(multiday_storm_object_table['unix_time_sec']) - 86400)
             <= multiday_storm_object_table.loc[x]['unix_time_sec']
             <= max(multiday_storm_object_table['unix_time_sec'])):
                 new_storms.append(multiday_storm_object_table.loc[x])        
