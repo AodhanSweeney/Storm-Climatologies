@@ -89,7 +89,7 @@ if __name__ == '__main__':
         last_spc_date_string=LAST_SPC_DATE_STRING)
     num_spc_dates = len(spc_date_strings)
 
-    grid_point_lat_, grid_point_long = get_latlng_grid_points(min_latitude_deg=MIN_LAT_DEG, min_longitude_deg=MIN_LONG_DEG, 
+    grid_point_lat_, grid_point_long = utils.get_latlng_grid_points(min_latitude_deg=MIN_LAT_DEG, min_longitude_deg=MIN_LONG_DEG, 
                                                                 lat_spacing_deg=LATITUDE_SPACING_DEG, 
                                                                 lng_spacing_deg=LONGITUDE_SPACING_DEG, 
                                                                 num_rows=NUM_ROWS, num_columns=NUM_COLUMNS)
@@ -140,7 +140,7 @@ if __name__ == '__main__':
     grid_cell_count_matrix = numpy.full((num_grid_rows, num_grid_columns), 0, dtype=int)
     
     for working_date_index in range(num_spc_dates):
-        date_in_memory_indices = _get_dates_needed(working_date_index=working_date_index, num_dates=num_spc_dates,
+        date_in_memory_indices = utils._get_dates_needed(working_date_index=working_date_index, num_dates=num_spc_dates,
             climatology_type=BIRTH_CLIMATOLOGY_TYPE)
         for i in range(num_spc_dates):
             if i in date_in_memory_indices:
@@ -198,7 +198,7 @@ if __name__ == '__main__':
         centroids_y = numpy.array([multiday_storm_object_table.loc[y]['centroid_y_metres'] for y in address_of_interest])
 
         
-        _bin_storm_objects_one_for_loop(centroids_x, centroids_y, unique_grid_point_x_metres,
+        utils._bin_storm_objects_one_for_loop(centroids_x, centroids_y, unique_grid_point_x_metres,
                                        unique_grid_point_y_metres, grid_cell_count_matrix)
     
 #apply mask so that grid cells that are have no storm births become nans
