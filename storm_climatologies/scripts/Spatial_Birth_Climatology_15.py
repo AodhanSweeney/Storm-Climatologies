@@ -172,7 +172,6 @@ if __name__ == '__main__':
 #lets change our storm object table to make it so that we only take storms that last 900 seconds or more
         mature_storm_table = multiday_storm_object_table[multiday_storm_object_table['age_sec']>= 900]
         mature_storm_ids = mature_storm_table['storm_id'].values
-        print('total storm objects', len(multiday_storm_object_table))
 
         multi_storm_ids, place_holder = numpy.unique(multiday_storm_object_table['storm_id'].values, 
                                                      return_index = True)
