@@ -22,32 +22,6 @@ PASSAGE_CLIMATOLOGY_TYPE = 'passage'
 # birth and death.
 
 
-def _get_dates_needed(working_date_index, num_dates, climatology_type):
-    """Gets dates needed for the given working date.
-
-    :param working_date_index: Array index for the day currently being worked
-        on.
-    :param num_dates: Number of dates total.
-    :return: date_needed_indices: 1-D numpy array with indices of dates needed.
-    """
-
-    if climatology_type == PASSAGE_CLIMATOLOGY_TYPE:
-        return numpy.array([working_date_index], dtype=int)
-
-    date_needed_indices = []
-    if climatology_type == BIRTH_CLIMATOLOGY_TYPE and working_date_index != 0:
-        date_needed_indices.append(working_date_index - 1)
-
-    date_needed_indices.append(working_date_index)
-
-    if (climatology_type == DEATH_CLIMATOLOGY_TYPE and
-            working_date_index != num_dates - 1):
-        date_needed_indices.append(working_date_index + 1)
-
-    return numpy.array(date_needed_indices, dtype=int)
-
-
-
 
 
 if __name__ == '__main__':
@@ -61,7 +35,7 @@ if __name__ == '__main__':
 
     speeds_avg = []
     for working_date_index in range(num_spc_dates):
-        date_in_memory_indices = _get_dates_needed(
+        date_in_memory_indices = utils._get_dates_needed(
             working_date_index=working_date_index, num_dates=num_spc_dates,
             climatology_type=PASSAGE_CLIMATOLOGY_TYPE)
 
