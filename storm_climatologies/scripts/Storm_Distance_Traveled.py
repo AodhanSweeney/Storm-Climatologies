@@ -65,7 +65,7 @@ if __name__ == '__main__':
     distance_in_km = []
 
     for working_date_index in range(num_spc_dates):
-        date_in_memory_indices = _get_dates_needed(working_date_index=working_date_index, num_dates=num_spc_dates)
+        date_in_memory_indices = utils._get_dates_needed(working_date_index=working_date_index, num_dates=num_spc_dates)
         for i in range(num_spc_dates):
             if i in date_in_memory_indices:
                 if storm_object_table_by_spc_date[i] is None:
