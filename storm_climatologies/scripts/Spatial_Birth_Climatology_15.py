@@ -20,67 +20,20 @@ Sep_String = '*'*50
 BIRTH_CLIMATOLOGY_TYPE = 'birth'
 DEATH_CLIMATOLOGY_TYPE = 'death'
 PASSAGE_CLIMATOLOGY_TYPE = 'passage'
-
 MIN_LAT_DEG = 20.
+MAX_LAT_DEG = 55.
 MIN_LONG_DEG = 230.
-LATITUDE_SPACING_DEG = 0.1 
-LONGITUDE_SPACING_DEG = 0.1
-NUM_ROWS = 350
-NUM_COLUMNS = 600
+MAX_LONG_DEG = 300.
+LATITUDE_SPACING_DEG = .10 
+LONGITUDE_SPACING_DEG = .10
+NUM_ROWS = 1 + int(numpy.round((MAX_LAT_DEG - MIN_LAT_DEG) / LATITUDE_SPACING_DEG))
+NUM_COLUMNS = 1 + int(numpy.round((MAX_LONG_DEG - MIN_LONG_DEG) / LONGITUDE_SPACING_DEG))
+#Center point of MYRORRS Grid = 37.5 deg N and 265.0 deg E
+CENTRAL_MAP_POINT_LAT= 37.5
+CENTRAL_MAP_POINT_LONG= 265.0
 
-def _find_nearest_value(sorted_input_values, test_value):
-    """Finds nearest value in array to test value.
-
-    This method is based on the following:
-
-    https://stackoverflow.com/posts/26026189/revisions
-
-    :param sorted_input_values: 1-D numpy array.  Must be sorted in ascending
-        order.
-    :param test_value: Test value.
-    :return: nearest_value: Nearest value in `sorted_input_values` to
-        `test_value`.
-    :return: nearest_index: Array index of nearest value.
-    """
-
-    nearest_index = numpy.searchsorted(
-        sorted_input_values, test_value, side='left')
-
-    subtract_one = nearest_index > 0 and (
-        nearest_index == len(sorted_input_values) or
-        math.fabs(test_value - sorted_input_values[nearest_index - 1]) <
-        math.fabs(test_value - sorted_input_values[nearest_index]))
-    if subtract_one:
-        nearest_index -= 1
-
-    return sorted_input_values[nearest_index], nearest_index
-
-def _bin_storm_objects_one_for_loop(
-        storm_centroids_x_metres, storm_centroids_y_metres,
-        unique_grid_point_x_metres, unique_grid_point_y_metres, grid_cell_count_matrix):
-    """Counts number of storm objects in each grid cell, using single for-loop.
-
-    :param storm_centroids_x_metres: See doc for
-        `_bin_storm_objects_triple_for_loop`.
-    :param storm_centroids_y_metres: Same.
-    :param unique_grid_point_x_metres: Same.
-    :param unique_grid_point_y_metres: Same.
-    :return: grid_cell_count_matrix: Same.
-    """
-
-    num_storm_objects = len(storm_centroids_x_metres)
-    num_grid_rows = len(unique_grid_point_y_metres)
-    num_grid_columns = len(unique_grid_point_x_metres)
-
-    for i in range(num_storm_objects):
-        _, this_row = _find_nearest_value(
-            unique_grid_point_y_metres, storm_centroids_y_metres[i])
-        _, this_column = _find_nearest_value(
-            unique_grid_point_x_metres, storm_centroids_x_metres[i])
-        grid_cell_count_matrix[this_row, this_column] += 1
-
-    return grid_cell_count_matrix
-
+X_SPACING_METRES = 10000.
+Y_SPACING_METRES = 10000.
 
 
 if __name__ == '__main__':
