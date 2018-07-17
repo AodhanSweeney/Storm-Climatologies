@@ -161,3 +161,56 @@ def latlng_vectors_to_matrices(unique_latitudes_deg, unique_longitudes_deg):
     (longitude_matrix_deg, latitude_matrix_deg) = numpy.meshgrid(
         unique_longitudes_deg, unique_latitudes_deg)
     return latitude_matrix_deg, longitude_matrix_deg
+  
+  def _find_nearest_value(sorted_input_values, test_value):
+    """Finds nearest value in array to test value.
+
+    This method is based on the following:
+
+    https://stackoverflow.com/posts/26026189/revisions
+
+    :param sorted_input_values: 1-D numpy array.  Must be sorted in ascending
+        order.
+    :param test_value: Test value.
+    :return: nearest_value: Nearest value in `sorted_input_values` to
+        `test_value`.
+    :return: nearest_index: Array index of nearest value.
+    """
+
+    nearest_index = numpy.searchsorted(
+        sorted_input_values, test_value, side='left')
+
+    subtract_one = nearest_index > 0 and (
+        nearest_index == len(sorted_input_values) or
+        math.fabs(test_value - sorted_input_values[nearest_index - 1]) <
+        math.fabs(test_value - sorted_input_values[nearest_index]))
+    if subtract_one:
+        nearest_index -= 1
+
+    return sorted_input_values[nearest_index], nearest_index
+
+def _bin_storm_objects_one_for_loop(
+        storm_centroids_x_metres, storm_centroids_y_metres,
+        unique_grid_point_x_metres, unique_grid_point_y_metres, grid_cell_count_matrix):
+    """Counts number of storm objects in each grid cell, using single for-loop.
+
+    :param storm_centroids_x_metres: See doc for
+        `_bin_storm_objects_triple_for_loop`.
+    :param storm_centroids_y_metres: Same.
+    :param unique_grid_point_x_metres: Same.
+    :param unique_grid_point_y_metres: Same.
+    :return: grid_cell_count_matrix: Same.
+    """
+
+    num_storm_objects = len(storm_centroids_x_metres)
+    num_grid_rows = len(unique_grid_point_y_metres)
+    num_grid_columns = len(unique_grid_point_x_metres)
+
+    for i in range(num_storm_objects):
+        _, this_row = _find_nearest_value(
+            unique_grid_point_y_metres, storm_centroids_y_metres[i])
+        _, this_column = _find_nearest_value(
+            unique_grid_point_x_metres, storm_centroids_x_metres[i])
+        grid_cell_count_matrix[this_row, this_column] += 1
+
+    return grid_cell_count_matrix
