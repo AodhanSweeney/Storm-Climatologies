@@ -201,5 +201,5 @@ if __name__ == '__main__':
         _bin_storm_objects_one_for_loop(centroids_x, centroids_y, unique_grid_point_x_metres,
                                        unique_grid_point_y_metres, grid_cell_count_matrix)
     
-#apply mask so that grid cells that are not 
+#apply mask so that grid cells that are have no storm births become nans
     grid_cell_count_matrix = numpy.ma.masked_where(grid_cell_count_matrix == 0, grid_cell_count_matrix)
