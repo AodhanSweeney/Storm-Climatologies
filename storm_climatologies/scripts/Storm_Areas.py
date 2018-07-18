@@ -7,6 +7,7 @@ plt.switch_backend('agg')
 import pyproj    
 import shapely.ops as ops
 from functools import partial
+import utils
 
 
 SEPARATOR_STRING = '\n\n' + '*' * 50 + '\n\n'
