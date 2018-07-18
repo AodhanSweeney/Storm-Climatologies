@@ -6,6 +6,7 @@ import pandas
 from gewittergefahr.gg_io import storm_tracking_io as tracking_io
 from gewittergefahr.gg_utils import time_conversion
 from math import radians, cos, sin, asin, sqrt
+import utils
 
 SEPARATOR_STRING = '\n\n' + '*' * 50 + '\n\n'
 
