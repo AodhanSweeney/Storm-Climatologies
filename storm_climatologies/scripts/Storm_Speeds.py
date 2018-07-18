@@ -6,8 +6,8 @@ from gewittergefahr.gg_utils import time_conversion
 
 SEPARATOR_STRING = '\n\n' + '*' * 50 + '\n\n'
 
-FIRST_SPC_DATE_STRING = '20050901'
-LAST_SPC_DATE_STRING = '20051130'
+FIRST_SPC_DATE_STRING = '20110601'
+LAST_SPC_DATE_STRING = '20110831'
 TOP_PROCESSED_DIR_NAME = '/condo/swatwork/ralager/myrorss_40dbz_echo_tops/final_tracks/reanalyzed/'
 TRACKING_SCALE_METRES2 = 314159265
 
@@ -17,11 +17,6 @@ NUM_HOURS_PER_DAY = 24
 BIRTH_CLIMATOLOGY_TYPE = 'birth'
 DEATH_CLIMATOLOGY_TYPE = 'death'
 PASSAGE_CLIMATOLOGY_TYPE = 'passage'
-
-# TODO(aodhan): This code should work for passage, but you need to modify for
-# birth and death.
-
-
 
 
 if __name__ == '__main__':
@@ -33,7 +28,7 @@ if __name__ == '__main__':
     storm_object_table_by_spc_date = [None] * num_spc_dates
     num_storm_objects_by_hour = numpy.full(NUM_HOURS_PER_DAY, 0, dtype=int)
 
-    speeds_avg = []
+    speeds = []
     for working_date_index in range(num_spc_dates):
         date_in_memory_indices = utils._get_dates_needed(
             working_date_index=working_date_index, num_dates=num_spc_dates,
@@ -70,22 +65,17 @@ if __name__ == '__main__':
                     axis=1))
 
         storm_object_tables_to_concat = [storm_object_table_by_spc_date[j] for j in date_in_memory_indices]
-#create storm object table and then create a secondary table including only storms lasting more than 15 minutes(900 seconds)
         multiday_storm_object_table = pandas.concat(storm_object_tables_to_concat, axis=0, ignore_index=True)
         mature_table = multiday_storm_object_table[multiday_storm_object_table['age_sec']>=900]
-    
-        storms = []
-        for x in multiday_storm_object_table['storm_id']:
-            #if a storm in the primary storm table is also in the mature one, create another table of just that id
-            if x in list(mature_table['storm_id']):
+        
+        for x in mature_table['storm_id']:
+            if x in multiday_storm_object_table['storm_id'].values:
                 one_storm_table = multiday_storm_object_table[multiday_storm_object_table['storm_id'] ==x]
-                one_storm_table= one_storm_table.reset_index()
-                del one_storm_table['index']
-                one_storm_speeds = []
-#from this new one storm table take the speeds of the storms at any point in its life and average them
-                for y in range(0,len(one_storm_table)):
-                    vectors = numpy.array([one_storm_table.loc[y]['east_velocity_m_s01'], one_storm_table.loc[y]['north_velocity_m_s01']])
-                    speed = numpy.sqrt(vectors.dot(vectors))
-                    one_storm_speeds.append(speed)
-                speeds_avg.append(numpy.mean(one_storm_speeds))
-    numpy.save('/home/aodhan/MATRIX/Speed_Fall_2005', speeds_avg)
+                EVectors = numpy.array([one_storm_table['east_velocity_m_s01']]) 
+                NVectors = numpy.array([one_storm_table['north_velocity_m_s01']])
+                squaredEV = EVectors*EVectors
+                squaredNV = NVectors*NVectors
+                one_storm_speeds = numpy.sqrt(squaredEV +squaredNV)
+                one_storm_speed_avg = numpy.mean(one_storm_speeds)
+                speeds.append(one_storm_speed_avg)
+        numpy.save('/home/aodhan/MATRIX/Speeds_Summer_2011', speeds)
