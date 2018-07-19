@@ -11,6 +11,7 @@ from gewittergefahr.gg_utils import projections
 from gewittergefahr.gg_utils import number_rounding
 from gewittergefahr.gg_utils import storm_tracking_utils as tracking_utils
 import math
+import utils
 
 DEGREES_LAT_TO_METRES = 60 * 1852
 DEGREES_TO_RADIANS = numpy.pi / 180
