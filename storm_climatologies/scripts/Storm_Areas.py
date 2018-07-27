@@ -35,7 +35,8 @@ if __name__ == '__main__':
     storm_object_areas = []
 
     for working_date_index in range(num_spc_dates):
-        date_in_memory_indices = utils._get_dates_needed(working_date_index=working_date_index, num_dates=num_spc_dates)
+        date_in_memory_indices = utils._get_dates_needed(working_date_index=working_date_index, num_dates=num_spc_dates,
+                                                         climatology_type = BIRTH_CLIMATOLOGY_TYPE)
         for i in range(num_spc_dates):
             if i in date_in_memory_indices:
                 if storm_object_table_by_spc_date[i] is None:
@@ -59,9 +60,10 @@ if __name__ == '__main__':
         storm_object_tables_to_concat = [storm_object_table_by_spc_date[j] for j in date_in_memory_indices]
         multiday_storm_object_table = pandas.concat(storm_object_tables_to_concat, axis=0, ignore_index=True)  
         multiday_storm_object_table = multiday_storm_object_table[multiday_storm_object_table['age_sec'] > 900]
-
+#using birth climatology, so we should only be taking last days worth of data into consideration so that we dont double count
+#certain storms
         maxtime = max(multiday_storm_object_table['unix_time_sec'])
-
+        
         new_storms = multiday_storm_object_table[multiday_storm_object_table['unix_time_sec']>= (maxtime-86400)]       
         storm_ids = new_storms['storm_id'].values
         unique_storms, unique_storm_adress = numpy.unique(storm_ids, return_index=True)
