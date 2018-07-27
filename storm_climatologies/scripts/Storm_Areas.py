@@ -60,15 +60,14 @@ if __name__ == '__main__':
         multiday_storm_object_table = pandas.concat(storm_object_tables_to_concat, axis=0, ignore_index=True)  
         multiday_storm_object_table = multiday_storm_object_table[multiday_storm_object_table['age_sec'] > 900]
 
-        new_storms = []
         maxtime = max(multiday_storm_object_table['unix_time_sec'])
+
         new_storms = multiday_storm_object_table[multiday_storm_object_table['unix_time_sec']>= (maxtime-86400)]       
         storm_ids = new_storms['storm_id'].values
         unique_storms, unique_storm_adress = numpy.unique(storm_ids, return_index=True)
         new_storms = pandas.DataFrame(new_storms)
         new_storms= new_storms.reset_index()
         del new_storms['index']
-        #print(new_storms)
         for x in unique_storms:
             areas_for_each_id = []
             storms = new_storms[new_storms['storm_id']==x]
