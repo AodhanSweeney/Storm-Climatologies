@@ -129,10 +129,10 @@ if __name__ == '__main__':
         multiday_storm_object_table = multiday_storm_object_table.assign(**argument_dict)
 #lets change our storm object table to make it so that we only take storms that last 900 seconds or more
         multiday_storm_object_table = multiday_storm_object_table[multiday_storm_object_table['age_sec']>= 900]
-        
+#reset index for the mutliday storm object table so that we can invert it with continuous indexing       
         multiday_storm_object_table= multiday_storm_object_table.reset_index()
         del multiday_storm_object_table['index']
-        
+#flip the storm object table and take just the values of the unique ids in reverse, this will give all the unique death positions
         storm_switch = multiday_storm_object_table.reindex(index=multiday_storm_object_table.index[::-1])
         deaths_table = storm_switch['storm_id'].values
 
