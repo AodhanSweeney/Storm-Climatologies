@@ -120,11 +120,12 @@ if __name__ == '__main__':
                                                     storm_object_table_by_spc_date[date_in_memory_indices[0]], axis=1))
         storm_object_tables_to_concat = [storm_object_table_by_spc_date[j] for j in date_in_memory_indices]
         multiday_storm_object_table = pandas.concat(storm_object_tables_to_concat, axis=0, ignore_index=True)
+#changing positions of centroid to equal area grid
         centroids_x_metres, centroids_y_metres = projections.project_latlng_to_xy(
                                 latitudes_deg=multiday_storm_object_table[tracking_utils.CENTROID_LAT_COLUMN].values,
                                 longitudes_deg=multiday_storm_object_table[tracking_utils.CENTROID_LNG_COLUMN].values,
                                 projection_object=projection_object)
-        
+#adjusting storm object table to include centroid positions in new equal area grid        
         argument_dict = {'centroid_x_metres': centroids_x_metres, 'centroid_y_metres': centroids_y_metres}
         multiday_storm_object_table = multiday_storm_object_table.assign(**argument_dict)
 #lets change our storm object table to make it so that we only take storms that last 900 seconds or more
